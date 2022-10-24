@@ -7,25 +7,19 @@ public enum TokenType {
 	BASIC_TEXT,
 	
 	NUMBER,
-	
-	SYMBOL,
-	
+		
 	FUNCTION,
 	
 	FOR,
 	
-	FOR_END,
-	
+	END,
+		
 	TAG_START,
 	
 	TAG_END,
 	
 	ECHO,
-	
-	END,
-	
-	FIND,
-	
+		
 	VARIABLE,
 	
 	STRING,
@@ -36,6 +30,4 @@ public enum TokenType {
 	
 	OPERATOR
 	
-	
-
 }

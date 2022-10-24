@@ -5,7 +5,7 @@ import hr.fer.oprpp1.custom.collections.*;
 public class GetterMain3 {
 
 	public static void main(String[] args) {
-		Collection col = new LinkedListIndexedCollection();
+		Collection col = new ArrayIndexedCollection();
 		col.add("Ivo");
 		col.add("Ana");
 		col.add("Jasna");

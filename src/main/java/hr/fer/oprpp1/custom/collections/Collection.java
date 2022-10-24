@@ -88,6 +88,12 @@ public interface Collection {
 	 */
 	abstract ElementsGetter createElementsGetter();
 	
+	/**
+	 * Tests if col variables elements tests ture for tester variable
+	 * Adds elements of to caller collection
+	 * @param col given collection on which tester is tested
+	 * @param tester to test on givven collection
+	 */
 	default void addAllSatisfying(Collection col, Tester tester) {
 		
 		ElementsGetter iterator = col.createElementsGetter();

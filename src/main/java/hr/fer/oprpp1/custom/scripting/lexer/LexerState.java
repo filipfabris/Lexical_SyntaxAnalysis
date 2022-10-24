@@ -6,13 +6,4 @@ public enum LexerState {
 	
 	TAG,
 	
-	FOR,
-	
-	ECHO,
-	
-	FIND,
-	
-	
-	
-
 }

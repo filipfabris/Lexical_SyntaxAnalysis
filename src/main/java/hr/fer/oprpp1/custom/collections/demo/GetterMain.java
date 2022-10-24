@@ -10,9 +10,9 @@ public class GetterMain {
 		Collection col = new ArrayIndexedCollection();
 		col.add("Ivo");
 		col.add("Ana");
+		col.add("Jasna");
 		
 		ElementsGetter getter = col.createElementsGetter();
-		col.add("Jasna");
 		System.out.println("Ima nepredanih elemenata: " + getter.hasNextElement());
 		System.out.println("Jedan element: " + getter.getNextElement());
 		System.out.println("Ima nepredanih elemenata: " + getter.hasNextElement());

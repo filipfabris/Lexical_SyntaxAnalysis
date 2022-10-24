@@ -12,7 +12,7 @@ public class TestMain {
 					+ "sin({$=i$}^2) = {$= i i * @sin \"0.000\" @decfmt $}\r\n"
 					+ "{$END$}";
 			
-			ScriptingLexer lexer = new ScriptingLexer(input);
+			SmartScriptLexer lexer = new SmartScriptLexer(input);
 			
 //			String name = "\"john\"";
 			

@@ -13,8 +13,7 @@ public class ElementConstantInteger extends Element{
 		super();
 		this.value = Integer.parseInt(value.toString());
 	}
-	
-	
+		
 	@Override
 	public String asText() {
 		return Integer.valueOf(value).toString();

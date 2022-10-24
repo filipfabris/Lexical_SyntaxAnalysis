@@ -14,31 +14,64 @@ import java.util.Objects;
  */
 public class ArrayIndexedCollection implements List{
 	
+	/**
+	 * <b>GetterClass </b> implements  <b> ElementsGetter </b>
+	 * It Gives ArrayIndexedCollection class functionality of iteration element by element
+	 * @author filip fabris
+	 */
 	private static class GetterClass implements ElementsGetter{
 		
+		/**
+		 * index of element to return on next call of funtion <b>getNextElement()</b>
+		 */
 		int currentIndex;
+		/**
+		 * variable to check whether there was modification during iteration on given array
+		 */
 		long savedModificationCount;
+		/**
+		 * given collection on which we iterate
+		 */
 		ArrayIndexedCollection collection;
 		
+		/**
+		 * Default constructor 
+		 * @param savedModificationCount variable to check if there was modification on given collection
+		 * @param collection on which we iterate
+		 * @throws NullPointerException if given collection variable is null
+		 */
 		GetterClass(long savedModificationCount, ArrayIndexedCollection collection){
+			if(collection == null) {
+				throw new NullPointerException();
+			}
 			this.currentIndex = 0;
 			this.savedModificationCount = savedModificationCount;
 			this.collection = collection;
 		}
-
+		
+		/**
+		 * Function return next element from given collection on which we iterate
+		 * @throws NoSuchElementException if there is no more elements
+		 * @throwsConcurrentModificationException if elements in given collection was modified
+		 */
 		@Override
 		public Object getNextElement() {
-			if(this.hasNextElement() == false) {
-				throw new NoSuchElementException("No more elements");
-			}
 			
 			if(this.savedModificationCount != this.collection.modificationCount) {
 				throw new ConcurrentModificationException("List has been modified");
 			}
 			
+			if(this.hasNextElement() == false) {
+				throw new NoSuchElementException("No more elements");
+			}
+			
+			
 			return this.collection.elements[currentIndex++];
 		}
-
+		
+		/**
+		 * Returns if there is more elements
+		 */
 		@Override
 		public boolean hasNextElement() {
 			return currentIndex < this.collection.size();
@@ -75,9 +108,7 @@ public class ArrayIndexedCollection implements List{
 	 */
 	//Constructor
 	public ArrayIndexedCollection(){
-		this.elements = new Object[DEFAULT_SIZE];
-		this.size = 0;
-		this.modificationCount = 0;
+		this(DEFAULT_SIZE);
 	}
 
 	/**
@@ -90,7 +121,7 @@ public class ArrayIndexedCollection implements List{
 	//Constructor
 	public ArrayIndexedCollection(int initialCapacity) {
 		if(initialCapacity < 1) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("given initialCapacity is smaller than 1");
 		}
 		
 		this.elements = new Object[initialCapacity];
@@ -111,11 +142,11 @@ public class ArrayIndexedCollection implements List{
 	//Constructor
 	public ArrayIndexedCollection(Collection other, int initialCapacity) {
 		if(other == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("other collection is null");
 		}
 		
 		if(initialCapacity < 1) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("initialCapacity is smaller than 1");
 		}
 		
 		if(initialCapacity < other.size()) {
@@ -147,10 +178,14 @@ public class ArrayIndexedCollection implements List{
 		return size;
 	}
 
+	/**
+	 * @param value Adds the given object into this collection
+	 * @throws NullPointerException if value is null
+	 */
 	@Override
 	public void add(Object value) {
 		if(value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 		
 		checkCapacity();
@@ -160,8 +195,17 @@ public class ArrayIndexedCollection implements List{
 //		modificationCount++;
 	}
 
+	/**
+	 * @param value object to be checked if exists in colletion
+	 * @return Returns true only if the collection contains given value
+	 * @throws NullPointerException if value is null
+	 */
 	@Override
 	public boolean contains(Object value) {
+		if(value == null) {
+			throw new NullPointerException("value is null");
+		}
+		
 		for(int i = 0; i<size; i++) {
 			if(elements[i].equals(value)) {
 				return true;
@@ -170,8 +214,17 @@ public class ArrayIndexedCollection implements List{
 		return false;
 	}
 	
+	/**
+	 * @param value object to be removed
+	 * @return Returns true only if the collection contains given value
+	 * @throws NullPointerException if value is null
+	 */
 	@Override
 	public boolean remove(Object value) {
+		if(value == null) {
+			throw new NullPointerException("value is null");
+		}
+		
 		for(int i = 0; i < size; i++) {
 			if(elements[i].equals(value)) {
 				postRemove(i);
@@ -214,7 +267,7 @@ public class ArrayIndexedCollection implements List{
 	 */
 	public Object get(int index) {
 		if(index < 0 || index > size -1) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("index is out of bounds");
 		}
 		
 		return elements[index];
@@ -227,7 +280,7 @@ public class ArrayIndexedCollection implements List{
 	 */
 	public int indexOf(Object value) {
 		if(value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 
 		for(int i = 0; i<size; i++) {
@@ -245,7 +298,7 @@ public class ArrayIndexedCollection implements List{
 	 */
 	public void remove(int index) {
 		if(index < 0 || index > size -1) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("index is out of bounds");
 		}
 		postRemove(index);
 	}
@@ -259,11 +312,11 @@ public class ArrayIndexedCollection implements List{
 	 */
 	public void insert(Object value, int position) {
 		if(position < 0 || position > size -1) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("index is out of bounds");
 		}
 		
 		if(value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 		
 		checkCapacity();
@@ -338,7 +391,10 @@ public class ArrayIndexedCollection implements List{
 		ArrayIndexedCollection other = (ArrayIndexedCollection) obj;
 		return Arrays.deepEquals(elements, other.elements) && size == other.size;
 	}
-
+	
+	/**
+	 * Creates ElementsGetter object which can be used as iterator
+	 */
 	@Override
 	public ElementsGetter createElementsGetter() {
 		return new GetterClass(this.modificationCount, this);

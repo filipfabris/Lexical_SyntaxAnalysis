@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.custom.scripting.nodes;
 
 import hr.fer.oprpp1.custom.scripting.elems.*;
+import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParserException;
 
 public class ForLoopNode extends Node{
 	
@@ -20,12 +21,15 @@ public class ForLoopNode extends Node{
 	}
 	
 	public ForLoopNode(Object variable, Object startExpression, Object endExpression, Object stepExpression) {
+		if(variable.getClass() != ElementVariable.class) {
+			throw new SmartScriptParserException("Wrong variable type in for loop");
+		}
 		this.variable = (ElementVariable) variable;
 		this.startExpression = (Element) startExpression;
 		this.endExpression = (Element) endExpression;
 		
 		if(stepExpression == null) {
-			this.stepExpression = null;
+			this.stepExpression = new Element();
 		}else {	
 			this.stepExpression = (Element) stepExpression;	
 		}
@@ -34,7 +38,7 @@ public class ForLoopNode extends Node{
 	public ElementVariable getVariable() {
 		return variable;
 	}
-	public Element getTartExpression() {
+	public Element getStartExpression() {
 		return startExpression;
 	}
 	public Element getEndExpression() {

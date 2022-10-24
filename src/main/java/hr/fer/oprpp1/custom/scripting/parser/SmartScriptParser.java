@@ -5,8 +5,9 @@ import hr.fer.oprpp1.custom.collections.ObjectStack;
 import hr.fer.oprpp1.custom.scripting.elems.Element;
 import hr.fer.oprpp1.custom.scripting.elems.*;
 import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
+import hr.fer.oprpp1.custom.scripting.lexer.LexerException;
 import hr.fer.oprpp1.custom.scripting.lexer.LexerState;
-import hr.fer.oprpp1.custom.scripting.lexer.ScriptingLexer;
+import hr.fer.oprpp1.custom.scripting.lexer.SmartScriptLexer;
 import hr.fer.oprpp1.custom.scripting.lexer.Token;
 import hr.fer.oprpp1.custom.scripting.lexer.TokenType;
 import hr.fer.oprpp1.custom.scripting.nodes.DocumentNode;
@@ -14,22 +15,35 @@ import hr.fer.oprpp1.custom.scripting.nodes.ForLoopNode;
 import hr.fer.oprpp1.custom.scripting.nodes.Node;
 import hr.fer.oprpp1.custom.scripting.nodes.*;
 
-public class ScriptingParser {
+public class SmartScriptParser {
 
 	private Token currentToken;
-	private ScriptingLexer lexer;
+	private SmartScriptLexer lexer;
 	private DocumentNode mainNode;
 	private ObjectStack stack;
 
-	ScriptingParser(ScriptingLexer lexer) {
+	public SmartScriptParser(SmartScriptLexer lexer) {
 		this.lexer = lexer;
 		this.mainNode = new DocumentNode();
 		this.stack = new ObjectStack();
 
 		stack.push(mainNode);
 		this.parse();
+	}
+	
+	public SmartScriptParser(String input) {
+		this.lexer = new SmartScriptLexer(input);
+		this.mainNode = new DocumentNode();
+		this.stack = new ObjectStack();
+
+		stack.push(mainNode);
 		
-		String val = "23";
+		try{
+			this.parse();
+		}catch(LexerException e){
+			throw new SmartScriptParserException("Error from lexer");
+		}
+		
 	}
 
 	private void parse() {
@@ -68,7 +82,7 @@ public class ScriptingParser {
 
 				// Moralo je doci do Tag_END-a
 				if (isTokenOfType(TokenType.TAG_END) == false) {
-					throw new RuntimeException("Wrong parsing");
+					throw new SmartScriptParserException("Wrong parsing");
 				}
 				this.lexer.setState(LexerState.BASIC);
 			}
@@ -76,6 +90,10 @@ public class ScriptingParser {
 			// Novi consumer je spreman
 			lexer.nextToken();
 			currentToken = lexer.getToken();
+		}
+		
+		if(stack.size() != 1) {
+			throw new SmartScriptParserException("stack size should be 1 at the end of parsing");
 		}
 
 	}
@@ -124,19 +142,30 @@ public class ScriptingParser {
 			
 			//String
 			else if(isTokenOfType(TokenType.STRING)) {
-				Element variable = new ElementString(currentToken.getValue());
-				array.add(variable);
+				Element variable;
+				String value = currentToken.getValue().toString();
+				value = value.substring(1, value.length()-1);
+				if(value.matches("^-?\\d+.\\d+$")) {
+					variable = new ElementConstantDouble(value);
+					array.add(variable);
+				}else if(value.matches("^-?\\d+$")) {
+					variable = new ElementConstantInteger(value);
+					array.add(variable);
+				}else {			
+					variable = new ElementString(currentToken.getValue());
+					array.add(variable);
+				}	
 			}
 				
 			//Error
 			else {
-				throw new RuntimeException("Wrong ECHO variable input");
+				throw new SmartScriptParserException("Wrong FOR loop variable input");
 			}
 			
 		}
 		
 		if(array.size() < 3 || array.size() > 4) {
-			throw new RuntimeException("Too many or too few variables");
+			throw new SmartScriptParserException("Too many or too few variables");
 		}
 		
 		if(array.size() == 3) {
@@ -202,7 +231,7 @@ public class ScriptingParser {
 			
 			//Error
 			else {
-				throw new RuntimeException("Wrong FOR variable input");
+				throw new SmartScriptParserException("Wrong ECHO variable input");
 			}
 			
 		}

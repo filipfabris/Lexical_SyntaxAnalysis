@@ -2,7 +2,7 @@ package hr.fer.oprpp1.custom.scripting.lexer;
 
 import hr.fer.oprpp1.custom.collections.ArrayIndexedCollection;
 
-public class ScriptingLexer {
+public class SmartScriptLexer {
 
 	private char[] data;
 	private int currentIndex;
@@ -21,7 +21,10 @@ public class ScriptingLexer {
 		operators.add("/");
 	}
 
-	public ScriptingLexer(String input) {
+	public SmartScriptLexer(String input) {
+		if(input == null) {
+			throw new LexerException("input is null");
+		}
 		this.data = input.toCharArray();
 		this.currentIndex = 0;
 		this.currentToken = null;
@@ -68,7 +71,7 @@ public class ScriptingLexer {
 			return;
 		}
 
-		throw new RuntimeException("Unexpected State");
+		throw new LexerException("Unexpected State");
 	}
 
 	private void tokenText() {
@@ -193,11 +196,11 @@ public class ScriptingLexer {
 
 			// Prvo je moralo biti slovo zbog ifa prije tako da je sigurno varijabla
 			while (currentIndex < data.length) {
-				if (Character.isLetter(data[currentIndex]) || Character.isDigit(data[currentIndex])
-						|| data[currentIndex] == '-') {
+				if (this.alowedvariable()) {
 					sb.append(data[currentIndex]);
 					currentIndex++;
-				}
+					continue;
+				} 
 				break;
 			}
 
@@ -256,7 +259,7 @@ public class ScriptingLexer {
 			return;
 		}
 
-		throw new RuntimeException("Lexical error");
+		throw new LexerException("Lexical error");
 	}
 
 	private void skipBlanks() {
@@ -280,7 +283,6 @@ public class ScriptingLexer {
 		}
 
 		return false;
-//		throw new RuntimeException("checkStartTag out of bounds");
 
 	}
 
@@ -294,22 +296,11 @@ public class ScriptingLexer {
 		}
 
 		return false;
-//		throw new RuntimeException("checkEndTag out of bounds");
 
 	}
-
-	private boolean isBlank() {
-		if (data[currentIndex] == '\r' || data[currentIndex] == '\n' || data[currentIndex] == '\t'
-				|| data[currentIndex] == ' ') {
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean allowedString() {
-		if (Character.isLetter(data[currentIndex]) || Character.isDigit(data[currentIndex])
-				|| String.valueOf(data[currentIndex]).matches("[!.,;?#-]")) {
+	
+	private boolean alowedvariable() {
+		if (Character.isLetter(data[currentIndex]) || Character.isDigit(data[currentIndex]) || data[currentIndex] == '_') {
 			return true;
 		}
 		return false;

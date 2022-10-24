@@ -1,7 +1,8 @@
-package hr.fer.oprpp1.custom.scripting.parser;
+package hr.fer.oprpp1.custom.scripting.parser.demo;
 
-import hr.fer.oprpp1.custom.scripting.lexer.ScriptingLexer;
+import hr.fer.oprpp1.custom.scripting.lexer.SmartScriptLexer;
 import hr.fer.oprpp1.custom.scripting.nodes.DocumentNode;
+import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParser;
 
 public class ParserMain {
 	
@@ -14,9 +15,9 @@ public class ParserMain {
 				+ "sin({$=i$}^2) = {$= i i * @sin \"0.000\" @decfmt $}\r\n"
 				+ "{$END$}";
 		
-		ScriptingLexer lexer = new ScriptingLexer(input);
+		SmartScriptLexer lexer = new SmartScriptLexer(input);
 		
-		ScriptingParser parser = new ScriptingParser(lexer);
+		SmartScriptParser parser = new SmartScriptParser(lexer);
 		
 		DocumentNode document = parser.getDocumentNode();
 		
@@ -24,8 +25,8 @@ public class ParserMain {
 		
 		System.out.println(originalDocumentBody);
 		
-		ScriptingLexer lexer2 = new ScriptingLexer(originalDocumentBody);
-		ScriptingParser parser2 = new ScriptingParser(lexer2);
+		SmartScriptLexer lexer2 = new SmartScriptLexer(originalDocumentBody);
+		SmartScriptParser parser2 = new SmartScriptParser(lexer2);
 		DocumentNode document2 = parser2.getDocumentNode();
 		
 		System.out.println("\n");

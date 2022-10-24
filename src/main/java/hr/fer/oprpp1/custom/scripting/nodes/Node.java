@@ -30,9 +30,13 @@ public class Node {
 		return numberOfChildren;
 	}
 	
-	public Node getChild(int index) {
-		if(index < numberOfChildren || index > numberOfChildren) {
-			throw new IndexOutOfBoundsException("index out of bound");
+	public Node getChild(int index) {		
+		if(index < 0 || index > numberOfChildren -1) {
+			throw new IndexOutOfBoundsException("index is out of bounds");
+		}
+		
+		if(this.collection == null) {
+			throw new NullPointerException("collection was not initialized");
 		}
 		
 		return (Node)collection.get(index);
@@ -43,21 +47,18 @@ public class Node {
 		
 		StringBuilder sb = new StringBuilder();
 		
+		if(this.collection == null) {
+			return "";
+		}
+		
 		ElementsGetter iterator = this.collection.createElementsGetter();
 		
 		while(iterator.hasNextElement()) {
 			
 			Node currentNode = (Node) iterator.getNextElement();
 
-				sb.append(currentNode.toString());
-			
-			
-			
+				sb.append(currentNode.toString());	
 		}
-		
-		
-		
-		
 		
 		return sb.toString();
 	}

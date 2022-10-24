@@ -14,21 +14,54 @@ import java.util.Objects;
 
 public class LinkedListIndexedCollection implements List {
 	
+	/**
+	 * <b>GetterClass </b> implements  <b> ElementsGetter </b>
+	 * It Gives ArrayIndexedCollection class functionality of iteration element by element
+	 * @author filip fabris
+	 */
 	private static class GetterClass implements ElementsGetter{
 		
+		/**
+		 * index of element to return on next call of funtion <b>getNextElement()</b>
+		 */
 		int currentIndex;
+		
+		/**
+		 * current node of element to return on next call of funtion <b>getNextElement()</b>
+		 */
 		ListNode current;
+		
+		/**
+		 * variable to check whether there was modification during iteration on given array
+		 */
 		long savedModificationCount;
+		
+		/**
+		 * given collection on which we iterate
+		 */
 		LinkedListIndexedCollection collection;
 		
-		
+		/**
+		 * Default constructor 
+		 * @param savedModificationCount variable to check if there was modification on given collection
+		 * @param collection on which we iterate
+		 * @throws NullPointerException if given collection variable is null
+		 */
 		GetterClass(ListNode current, long savedModificationCount, LinkedListIndexedCollection collection){
+			if(collection == null) {
+				throw new NullPointerException();
+			}
 			this.currentIndex = 0;
 			this.current = current;
 			this.savedModificationCount = savedModificationCount;
 			this.collection = collection;
 		}
 
+		/**
+		 * Function return next element from given collection on which we iterate
+		 * @throws NoSuchElementException if there is no more elements
+		 * @throwsConcurrentModificationException if elements in given collection was modified
+		 */
 		@Override
 		public Object getNextElement() {
 			if(this.hasNextElement() == false) {
@@ -44,6 +77,9 @@ public class LinkedListIndexedCollection implements List {
 			return value;
 		}
 
+		/**
+		 * Returns if there is more elements
+		 */
 		@Override
 		public boolean hasNextElement() {
 			return currentIndex < this.collection.size();
@@ -121,11 +157,12 @@ public class LinkedListIndexedCollection implements List {
 	/**
 	 * Adds all elements from <b>other</b> Collection to <b>LinkedListIndexedCollection</b>
 	 * @param other collection from which elements will be added to current <b>LinkedListIndexedCollection</b>
+	 * @throws NullPointerException if other collection is null
 	 */
 	//Constructor
 	public LinkedListIndexedCollection(Collection other) {
 		if (other == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("other collection is null");
 		}
 		
 		this.addAll(other);
@@ -145,7 +182,7 @@ public class LinkedListIndexedCollection implements List {
 	@Override
 	public void add(Object value) {
 		if (value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 		
 //		this.modificationCount++;
@@ -180,7 +217,7 @@ public class LinkedListIndexedCollection implements List {
 	@Override
 	public boolean contains(Object value) {
 		if (value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 
 		ListNode current = first;
@@ -203,7 +240,7 @@ public class LinkedListIndexedCollection implements List {
 	@Override
 	public boolean remove(Object value) {
 		if (value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 
 		ListNode current = first;
@@ -254,7 +291,7 @@ public class LinkedListIndexedCollection implements List {
 	public Object get(int index) {
 
 		if (index < 0 || index > size - 1) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("index is out of bounds");
 		}
 		
 		int counter;
@@ -288,11 +325,11 @@ public class LinkedListIndexedCollection implements List {
 	 */
 	public void insert(Object value, int position) {
 		if (position < 0 || position > size) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("index is out of bounds");
 		}
 		
 		if (value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 
 		if(this.first == null && position == 0) {
@@ -344,7 +381,7 @@ public class LinkedListIndexedCollection implements List {
 	 */
 	public int indexOf(Object value) {
 		if (value == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("value is null");
 		}
 		
 		int index = 0;
@@ -368,7 +405,7 @@ public class LinkedListIndexedCollection implements List {
 	 */
 	public void remove(int index) {
 		if (index < 0 || index > size - 1) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("index is out of bounds");
 		}
 
 		// Prvi i jedini
@@ -450,7 +487,10 @@ public class LinkedListIndexedCollection implements List {
 		return true;
 		
 	}
-
+	
+	/**
+	 * Creates ElementsGetter object which can be used as iterator
+	 */
 	@Override
 	public ElementsGetter createElementsGetter() {
 		return new GetterClass(this.first, this.modificationCount, this);
